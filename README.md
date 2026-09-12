@@ -80,19 +80,11 @@ For Software:
 
 # Screenshots
 
-![Landing Page](README-assets/landing-page.png)
-*Landing page where players enter their nickname and choose whether to create or join a room.*
-
 ![Game Lobby](README-assets/game-lobby.png)
 *Two-player game lobby showing the room code and players before starting the Excuse Royale.*
 
 ![Winner Screen](README-assets/winner-screen.png)
 *End-of-game screen announcing the winner and displaying the final result.*
-
-# Diagrams
-
-![Workflow](https://dummyimage.com/1200x500/101828/ffffff&text=Session+%E2%86%92+AI+Scenario+%E2%86%92+Excuse+Submission+%E2%86%92+Scoring+%E2%86%92+Next+Round+%E2%86%92+Winner)
-*Game workflow: players enter a session, receive an AI-generated scenario, submit excuses, receive scores, and continue through rounds until a winner is determined.*
 
 ## Project Demo
 
