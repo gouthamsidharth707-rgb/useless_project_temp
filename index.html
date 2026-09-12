@@ -1,1 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The Excuse Game: turn ridiculous situations into increasingly elaborate excuses. A two-player AI-powered party game." />
+  <title>Excuse Game | Make It Believable</title>
 
+  <!-- Professional typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #08090d;
+      --panel: #101219;
+      --panel-2: #151823;
+      --text: #f5f5f7;
+      --muted: #989dab;
+      --line: rgba(255,255,255,.09);
+      --accent: #b7ff4a;
+      --accent-dark: #89cf20;
+      --purple: #8d79ff;
+      --danger: #ff6b6b;
+      --max: 1180px;
+      --radius: 22px;
+      --shadow: 0 24px 80px rgba(0,0,0,.38);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 78% 8%, rgba(141,121,255,.14), transparent 28%),
+        radial-gradient(circle at 15% 18%, rgba(183,255,74,.07), transparent 26%),
+        var(--bg);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    .container {
+      width: min(var(--max), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    /* Navigation */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(16px);
+      background: rgba(8,9,13,.72);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-family: "Space Grotesk", sans-serif;
+      font-weight: 700;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #0a0b0f;
+      background: var(--accent);
+      box-shadow: 0 0 32px rgba(183,255,74,.2);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a { transition: color .2s ease; }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      padding: 10px 16px;
+      border: 1px solid rgba(183,255,74,.3);
+      color: var(--accent) !important;
+      border-radius: 999px;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 720px;
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      align-items: center;
+      gap: 72px;
+      padding: 88px 0 96px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.03);
+      color: #cdd1db;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    h1, h2, h3 {
+      font-family: "Space Grotesk", sans-serif;
+      letter-spacing: -.045em;
+      line-height: 1.04;
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 23px;
+      max-width: 760px;
+      font-size: clamp(54px, 7vw, 88px);
+    }
+
+    .gradient-text {
+      color: var(--accent);
+    }
+
+    .hero-copy {
+      max-width: 640px;
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 13px;
+      margin-top: 34px;
+    }
+
+    .btn {
+      min-height: 50px;
+      padding: 0 20px;
+      border-radius: 13px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #0a0b0f;
+      background: var(--accent);
+      box-shadow: 0 12px 36px rgba(183,255,74,.14);
+    }
+
+    .btn-primary:hover { background: #c7ff70; }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.035);
+      border-color: var(--line);
+    }
+
+    .trust-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 23px;
+      color: #757b89;
+      font-size: 12px;
+    }
+
+    .trust-line strong { color: #b5bac5; }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      min-height: 485px;
+      display: grid;
+      place-items: center;
+    }
+
+    .game-card {
+      position: relative;
+      width: min(100%, 470px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 26px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.025) 45%, rgba(141,121,255,.07)),
+        var(--panel);
+      box-shadow: var(--shadow);
+      transform: rotate(2.4deg);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--accent);
+    }
+
+    .live i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .scenario-label {
+      color: #777d8a;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .11em;
+      font-weight: 700;
+    }
+
+    .scenario {
+      margin-top: 10px;
+      font-size: 28px;
+      line-height: 1.16;
+    }
+
+    .scenario span { color: var(--accent); }
+
+    .excuse-box {
+      margin-top: 24px;
+      padding: 17px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(0,0,0,.2);
+    }
+
+    .excuse-box small {
+      display: block;
+      color: #757b89;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .excuse-text {
+      color: #d6d8df;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .score-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 22px;
+    }
+
+    .score {
+      color: var(--accent);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border: 1px solid rgba(183,255,74,.18);
+      border-radius: 999px;
+      color: #b3c394;
+      background: rgba(183,255,74,.05);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .float-chip {
+      position: absolute;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(16,18,25,.92);
+      box-shadow: 0 15px 45px rgba(0,0,0,.35);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .chip-one { left: -3px; top: 57px; transform: rotate(-6deg); }
+    .chip-two { right: -14px; bottom: 69px; transform: rotate(5deg); }
+
+    .number {
+      color: var(--accent);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 22px;
+      margin-right: 5px;
+    }
+
+    /* Section */
+    section {
+      padding: 106px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section-heading {
+      max-width: 760px;
+    }
+
+    .section-kicker {
+      margin-bottom: 13px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: clamp(38px, 5vw, 58px);
+    }
+
+    .section-intro {
+      margin: 19px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    /* About */
+    .about-grid {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 72px;
+      align-items: start;
+    }
+
+    .about-copy p {
+      margin: 0;
+      color: #b4b8c3;
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    .about-copy p + p { margin-top: 18px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .feature {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .feature-number {
+      color: #656b79;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+    }
+
+    .feature h3 {
+      margin-top: 18px;
+      font-size: 21px;
+    }
+
+    .feature p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* How it works */
+    .steps {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .step {
+      position: relative;
+      min-height: 225px;
+      padding: 23px;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: rgba(255,255,255,.022);
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #0a0b0f;
+      background: var(--accent);
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .step h3 {
+      margin-top: 31px;
+      font-size: 21px;
+    }
+
+    .step p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    /* Session */
+    .session-layout {
+      display: grid;
+      grid-template-columns: 1fr .7fr;
+      gap: 14px;
+      margin-top: 47px;
+    }
+
+    .session-main, .session-side {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+    }
+
+    .session-main {
+      padding: 30px;
+    }
+
+    .session-side {
+      padding: 30px;
+      background:
+        radial-gradient(circle at 75% 15%, rgba(183,255,74,.09), transparent 36%),
+        var(--panel);
+    }
+
+    .round {
+      display: grid;
+      grid-template-columns: 50px 1fr auto;
+      align-items: center;
+      gap: 18px;
+      padding: 19px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .round:last-child { border-bottom: 0; }
+
+    .round-icon {
+      width: 43px;
+      height: 43px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: var(--accent);
+      background: rgba(183,255,74,.06);
+      border: 1px solid rgba(183,255,74,.15);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .round h3 {
+      font-size: 16px;
+      letter-spacing: -.025em;
+    }
+
+    .round p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .time {
+      color: #777d89;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .score-big {
+      margin-top: 16px;
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 66px;
+      line-height: 1;
+      color: var(--accent);
+    }
+
+    .session-side p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .session-side .mini {
+      margin-top: 28px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+      color: #bbbfc9;
+      font-size: 13px;
+    }
+
+    .mini-item span:last-child {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* CTA */
+    .cta {
+      padding: 110px 0 130px;
+    }
+
+    .cta-box {
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      padding: 74px 30px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(183,255,74,.12), transparent 35%),
+        radial-gradient(circle at 50% 100%, rgba(141,121,255,.09), transparent 38%),
+        #0e1017;
+    }
+
+    .cta-box h2 { max-width: 800px; margin: auto; }
+
+    .cta-box p {
+      max-width: 600px;
+      margin: 18px auto 28px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    footer {
+      padding: 25px 0 35px;
+      border-top: 1px solid var(--line);
+      color: #686e7b;
+      font-size: 12px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .footer-brand { color: #a8acb6; font-weight: 700; }
+
+    /* Responsive */
+    @media (max-width: 920px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 45px;
+        padding-top: 68px;
+      }
+
+      .hero-visual { min-height: 430px; }
+      .about-grid, .session-layout { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .container { width: min(var(--max), calc(100% - 28px)); }
+      .nav-links { display: none; }
+
+      .hero {
+        min-height: auto;
+        padding: 55px 0 72px;
+      }
+
+      h1 { font-size: 52px; }
+      .hero-copy { font-size: 16px; }
+      .game-card { transform: none; }
+      .chip-one { left: 0; top: 25px; }
+      .chip-two { right: 0; bottom: 30px; }
+
+      section { padding: 78px 0; }
+
+      .feature-grid, .steps { grid-template-columns: 1fr; }
+      .round { grid-template-columns: 44px 1fr; }
+      .time { grid-column: 2; }
+      .session-main, .session-side { padding: 22px; }
+
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+      .cta { padding: 78px 0 94px; }
+      .cta-box { padding: 56px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="Excuse Game home">
+        <span class="brand-mark">E</span>
+        <span>Excuse Game</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#how">How It Works</a>
+        <a href="#session">Session</a>
+        <a class="nav-cta" href="https://excuseroyale.vercel.app/">Play Now</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <div class="container hero">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          Two players. One ridiculous situation.
+        </div>
+
+        <h1>
+          Your excuse.<br />
+          Make it <span class="gradient-text">unbelievable.</span>
+        </h1>
+
+        <p class="hero-copy">
+          A fast-paced two-player game where an AI throws absurd situations at you,
+          and your only job is to invent the longest, most pointless, strangely convincing
+          excuse possible.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://excuseroyale.vercel.app/">
+            Start a Game
+            <span>↗</span>
+          </a>
+          <a class="btn btn-secondary" href="#how">
+            See how it works
+          </a>
+        </div>
+
+        <div class="trust-line">
+          <span>Built for</span>
+          <strong>friends · parties · procrastinators · professional excuse makers</strong>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-label="Game preview">
+        <div class="float-chip chip-one">
+          <span class="number">2</span> players
+        </div>
+
+        <div class="game-card">
+          <div class="card-top">
+            <span>SESSION 04 / ROUND 03</span>
+            <span class="live"><i></i> LIVE</span>
+          </div>
+
+          <div class="scenario-label">The scenario</div>
+          <h2 class="scenario">
+            Why did you miss the meeting at <span>9:00 AM?</span>
+          </h2>
+
+          <div class="excuse-box">
+            <small>Player 01 · submitted excuse</small>
+            <div class="excuse-text">
+              “Technically I was on time, but the clock in my room was
+              running 17 minutes behind because my neighbor's Wi-Fi interfered
+              with the microwave...”
+            </div>
+          </div>
+
+          <div class="score-row">
+            <div class="score">+84 pts</div>
+            <div class="pill">ABSURDLY DETAILED</div>
+          </div>
+        </div>
+
+        <div class="float-chip chip-two">
+          <span class="number">84</span> excuse points
+        </div>
+      </div>
+    </div>
+
+    <section id="about">
+      <div class="container about-grid">
+        <div class="section-heading">
+          <div class="section-kicker">01 / About the project</div>
+          <h2>An excuse game for people who take nonsense seriously.</h2>
+          <p class="section-intro">
+            There is no useful skill here. That is exactly the point.
+          </p>
+        </div>
+
+        <div class="about-copy">
+          <p>
+            The Excuse Game turns everyday awkward situations into competitive storytelling.
+            Each round starts with a random AI-generated scenario. Both players then compete
+            to produce an excuse that is longer, stranger, and more elaborate than the other.
+          </p>
+          <p>
+            The AI keeps the situations unpredictable while the scoring system rewards
+            creativity, unnecessary detail, and the sheer commitment to a terrible lie.
+          </p>
+        </div>
+
+        <div class="feature-grid" style="grid-column: 2;">
+          <div class="feature">
+            <div class="feature-number">FEATURE 01</div>
+            <h3>AI Scenarios</h3>
+            <p>Fresh, unexpected situations keep every round different.</p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-number">FEATURE 02</div>
+            <h3>Two-Player</h3>
+            <p>Compete head-to-head and see who can sell the better excuse.</p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-number">FEATURE 03</div>
+            <h3>Pointless Scoring</h3>
+            <p>Detailed, creative, ridiculous excuses earn more points.</p>
+          </div>
+
+          <div class="feature">
+            <div class="feature-number">FEATURE 04</div>
+            <h3>Winner Takes Nothing</h3>
+            <p>Except bragging rights and an unnecessarily strong excuse.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="container">
+        <div class="section-heading">
+          <div class="section-kicker">02 / How it works</div>
+          <h2>Four steps. Zero useful outcomes.</h2>
+          <p class="section-intro">
+            A complete game session is designed to be quick to start and hard to stop.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <h3>Enter a session</h3>
+            <p>Create a room and bring in your second player. No elaborate setup.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">02</div>
+            <h3>Get the scenario</h3>
+            <p>The AI presents a random situation that needs one thing: an excuse.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">03</div>
+            <h3>Defend yourself</h3>
+            <p>Write the most elaborate explanation you can invent. More detail, more chaos.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-num">04</div>
+            <h3>Collect the points</h3>
+            <p>Scores are calculated, the round ends, and the next ridiculous situation begins.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="session">
+      <div class="container">
+        <div class="section-heading">
+          <div class="section-kicker">03 / Session design</div>
+          <h2>Built around short, competitive rounds.</h2>
+          <p class="section-intro">
+            The game gets increasingly difficult because the excuses have to get increasingly ridiculous.
+          </p>
+        </div>
+
+        <div class="session-layout">
+          <div class="session-main">
+            <div class="round">
+              <div class="round-icon">A</div>
+              <div>
+                <h3>Scenario reveal</h3>
+                <p>A new situation appears for both players.</p>
+              </div>
+              <div class="time">~20 sec</div>
+            </div>
+
+            <div class="round">
+              <div class="round-icon">B</div>
+              <div>
+                <h3>Excuse writing</h3>
+                <p>Build your explanation. Specificity is your best friend.</p>
+              </div>
+              <div class="time">~60 sec</div>
+            </div>
+
+            <div class="round">
+              <div class="round-icon">C</div>
+              <div>
+                <h3>Scoring</h3>
+                <p>The excuses are evaluated and points are awarded.</p>
+              </div>
+              <div class="time">~15 sec</div>
+            </div>
+
+            <div class="round">
+              <div class="round-icon">D</div>
+              <div>
+                <h3>Next round</h3>
+                <p>New scenario. Bigger excuse. Worse decisions.</p>
+              </div>
+              <div class="time">Repeat</div>
+            </div>
+          </div>
+
+          <aside class="session-side">
+            <div class="section-kicker">Typical session</div>
+            <div class="score-big">5–10</div>
+            <p>rounds per match, depending on the selected game mode.</p>
+
+            <div class="mini">
+              <div class="mini-item"><span>Players</span><span>2</span></div>
+              <div class="mini-item"><span>Scenarios</span><span>AI-generated</span></div>
+              <div class="mini-item"><span>Winner</span><span>Highest score</span></div>
+              <div class="mini-item"><span>Skill required</span><span>None</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="container">
+        <div class="cta-box">
+          <div class="section-kicker">04 / Ready?</div>
+          <h2>The situation is already getting suspicious.</h2>
+          <p>
+            Start a session, challenge a friend, and find out who can construct
+            the most unnecessarily complicated excuse.
+          </p>
+          <a class="btn btn-primary" href="https://excuseroyale.vercel.app/">
+            Enter the Game
+            <span>↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div class="footer-brand">Excuse Game</div>
+      <div>© 2026 · A completely unnecessary competitive experience.</div>
+    </div>
+  </footer>
+</body>
+</html>
